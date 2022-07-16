@@ -39,21 +39,7 @@ function M.get_accept_offer_callback()
 end
 
 local function year_increase()
-	if game_data.year < 1400 then
-		return 3
-	elseif game_data.year < 1600 then
-		return 2
-	elseif game_data.year < 1800 then
-		return 1/2
-	elseif game_data.year < 2000 then
-		return 1/4
-	elseif game_data.year < 2100 then
-		return 1/6
-	elseif game_data.year < 2200 then
-		return 1/12
-	else
-		return 1/64
-	end
+	return 0
 end
 
 function M.next()
