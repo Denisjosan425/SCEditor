@@ -241,224 +241,225 @@ function M.validate(t)
 			}
 		end
 	end
-
-	if t.id == "consequences" then
-		t.cause_of_warming = lume.randomchoice(causes_of_warming)
-	end
-
-	if not t.difficulty then
-		t.difficulty = "standard"
-	end
-
 	t.step = 0
-	t.queue = {}
-	t.fog_of_war = "standard"
-	t.current_moves = {}
-	-- t.previous_moves = {}
-	t.current_shell = {}
-	t.previous_shell = {}
-	t.current_tank = {}
-	t.previous_tank = {}
-	t.current_planes = {}
-	t.previous_planes = {
-		-- {
-		-- 	"kiev", "bryansk", "success", "lipetsk", "Russia"
-		-- }
-	}
-	t.current_chemical = {}
-	t.previous_chemical = {
-		-- {
-		-- 	"kiev", "bryansk", "Russia"
-		-- }
-	}
-	t.current_explosions = {}
-	t.previous_explosions = {
-		-- {
-		-- 	type, province, from
-		-- }
-	}
+	
+	if not t.is_scedit then
+		if t.id == "consequences" then
+			t.cause_of_warming = lume.randomchoice(causes_of_warming)
+		end
 
-	t.used_shell = {}
-	t.used_tank = {}
-	t.used_chemical = {}
-	t.used_explosions = {}
-	t.used_planes = {}
+		if not t.difficulty then
+			t.difficulty = "standard"
+		end
 
-	if not t.pacts_data then
-		t.pacts_data = {}
-	end
-	t.old_offers = {}
-	t.new_offers = {
-		-- {
-		-- 	1, "peace", "England", "Russia"
-		-- },
-		-- {
-		-- 	2, "pact", "England", "Russia"
-		-- },
-		-- {
-		-- 	3, "war", "England", "Russia"
-		-- }
-	}
-	t.accepted_offers = {}
+		t.queue = {}
+		t.fog_of_war = "standard"
+		t.current_moves = {}
+		-- t.previous_moves = {}
+		t.current_shell = {}
+		t.previous_shell = {}
+		t.current_tank = {}
+		t.previous_tank = {}
+		t.current_planes = {}
+		t.previous_planes = {
+			-- {
+			-- 	"kiev", "bryansk", "success", "lipetsk", "Russia"
+			-- }
+		}
+		t.current_chemical = {}
+		t.previous_chemical = {
+			-- {
+			-- 	"kiev", "bryansk", "Russia"
+			-- }
+		}
+		t.current_explosions = {}
+		t.previous_explosions = {
+			-- {
+			-- 	type, province, from
+			-- }
+		}
 
-	t.trade = {
-		-- {
-		-- 	"per_turn", "England", "Russia", 256
-		-- }
-	}
+		t.used_shell = {}
+		t.used_tank = {}
+		t.used_chemical = {}
+		t.used_explosions = {}
+		t.used_planes = {}
 
-	t.nuclear_reactors_cooling = {
-		-- moscow = 12
-	}
+		if not t.pacts_data then
+			t.pacts_data = {}
+		end
+		t.old_offers = {}
+		t.new_offers = {
+			-- {
+			-- 	1, "peace", "England", "Russia"
+			-- },
+			-- {
+			-- 	2, "pact", "England", "Russia"
+			-- },
+			-- {
+			-- 	3, "war", "England", "Russia"
+			-- }
+		}
+		t.accepted_offers = {}
 
-	t.consequence_data = {}
+		t.trade = {
+			-- {
+			-- 	"per_turn", "England", "Russia", 256
+			-- }
+		}
 
-	t.dissolved_army_for_gold = {}
+		t.nuclear_reactors_cooling = {
+			-- moscow = 12
+		}
 
-	for k, v in pairs(t.lands) do
-		v.ideology = "republic"
-		v.changed_ideology = -50
-		v.declared_war = nil
-		v.war_weariness = 0
-		v.army = 0
-		v.population = 0
-		v.num_of_provinces = 0
-		v.money = v.money or 0
-		v.economy = {
-			income = {
-				population = 0,
+		t.consequence_data = {}
+
+		t.dissolved_army_for_gold = {}
+
+		for k, v in pairs(t.lands) do
+			v.ideology = "republic"
+			v.changed_ideology = -50
+			v.declared_war = nil
+			v.war_weariness = 0
+			v.army = 0
+			v.population = 0
+			v.num_of_provinces = 0
+			v.money = v.money or 0
+			v.economy = {
+				income = {
+					population = 0,
+					technology = 0,
+					skills = 0,
+					buildings = 0,
+					trade = 0,
+					vassality = 0
+				},
+				expense = {
+					army = 0,
+					buildings = 0,
+					trade = 0,
+					vassality = 0
+				},
+				inflation = 0,
+				income_total = 0,
+				expense_total = 0,
+				balance = 0,
+			}
+			v.science_per_turn = {
+				base = 0,
+				buildings = 0,
 				technology = 0,
-				skills = 0,
-				buildings = 0,
-				trade = 0,
-				vassality = 0
-			},
-			expense = {
-				army = 0,
-				buildings = 0,
-				trade = 0,
-				vassality = 0
-			},
-			inflation = 0,
-			income_total = 0,
-			expense_total = 0,
-			balance = 0,
-		}
-		v.science_per_turn = {
-			base = 0,
-			buildings = 0,
-			technology = 0,
-			skills = 0
-		}
-		v.total_science_per_turn = 0
-		v.science = 0
-		v.skills = 0
-		v.movement_points = 0
-		v.total_movement_points = 0
-		v.tax = 0.1
-		v.selected_technology = nil
-		v.bonuses = {
-			{"building_megarefrigerator"},
-			{"building_machine_a"},
-			{"building_machine_b"},
-			{"building_machine_c"},
-		}
-		v.opened_technology = {}
-		if k ~= "Undeveloped_land" and t.technology_lvl and t.technology_lvl ~= 0 then
-			for key, val in pairs(technology_data) do
-				local lvl, n = key:match("t_(%d+)_(%d)")
-				-- print("lvl: ", k, lvl, n, t.technology_lvl)
-				if tonumber(lvl) <= t.technology_lvl then
-					table.insert(v.opened_technology, key)
-					for key_, val_ in pairs(val.bonuses) do
-						if not val_[2] then
-							val_[2] = 0
+				skills = 0
+			}
+			v.total_science_per_turn = 0
+			v.science = 0
+			v.skills = 0
+			v.movement_points = 0
+			v.total_movement_points = 0
+			v.tax = 0.1
+			v.selected_technology = nil
+			v.bonuses = {
+				{"building_megarefrigerator"},
+				{"building_machine_a"},
+				{"building_machine_b"},
+				{"building_machine_c"},
+			}
+			v.opened_technology = {}
+			if k ~= "Undeveloped_land" and t.technology_lvl and t.technology_lvl ~= 0 then
+				for key, val in pairs(technology_data) do
+					local lvl, n = key:match("t_(%d+)_(%d)")
+					-- print("lvl: ", k, lvl, n, t.technology_lvl)
+					if tonumber(lvl) <= t.technology_lvl then
+						table.insert(v.opened_technology, key)
+						for key_, val_ in pairs(val.bonuses) do
+							if not val_[2] then
+								val_[2] = 0
+							end
+							val_[3] = "technology"
+							table.insert(v.bonuses, val_)
 						end
-						val_[3] = "technology"
-						table.insert(v.bonuses, val_)
 					end
 				end
 			end
-		end
-		v.opened_skills = {}
-		if not v.allies then
-			v.allies = {}
-		end
-		if not v.pacts then
-			v.pacts = {}
-		end
-		if not v.enemies then
-			v.enemies = {}
-		end
-		if not find_in_table("Undeveloped_land", v.enemies) then
-			table.insert(v.enemies, "Undeveloped_land")
-		end
-		v.betrayals_list = {}
-		-- v.history = {
-		-- 	money = {},
-		-- 	income = {},
-		-- 	expense = {},
-		-- 	total_science_per_turn = {},
-		-- 	army = {},
-		-- 	resources = {}
-		-- }
-		v.resources = {
-			gold = 0,
-			uranium = 0,
-			heavy_water = 0,
-			weapons = 0,
-			chemical_weapon = 0,
-			tank = 0
-		}
-		v.ai = {
-			strategy = {
-				strategy_type = "development",
-				target = nil,
-				wish = {},
-				turns = 0,
-			},
-			land_type = lume.randomchoice(land_types),
-		}
-		v.last_attacked = k
-		v.stability = 100
-
-		-- { land, money, step }
-		v.rebellion_support = {}
-		-- { action, step }
-		v.actions_taken = {}
-	end
-
-	for k, v in pairs(t.lands) do
-		table.insert(game_data.lands.Undeveloped_land.enemies, k)
-	end
-
-	-- a - army, o - owner, l_a - recruited_army, b - buildings, p - population, t_o = true owner, s - stability
-	for k, v in pairs(t.provinces) do
-		v.a = {}
-		if not v.water then
-			v.a[v.o] = 0 --math.floor(lume.random(10, 200))
-			v.l_a = 0
-			if not v.b then
-				v.b = {
-					-- megarefrigerator = 1
-					-- machine_a = 1,
-					-- machine_b = 1,
-					-- machine_c = 1
-					-- mine = lvl
-				}
+			v.opened_skills = {}
+			if not v.allies then
+				v.allies = {}
 			end
-			-- v.t_o = v.o
-			if v.o == "Undeveloped_land" then
-				v.p = 0
-				v.a.Undeveloped_land = 500
-			else
-				v.p = math.floor(lume.random(min_population, max_population))
+			if not v.pacts then
+				v.pacts = {}
+			end
+			if not v.enemies then
+				v.enemies = {}
+			end
+			if not find_in_table("Undeveloped_land", v.enemies) then
+				table.insert(v.enemies, "Undeveloped_land")
+			end
+			v.betrayals_list = {}
+			-- v.history = {
+			-- 	money = {},
+			-- 	income = {},
+			-- 	expense = {},
+			-- 	total_science_per_turn = {},
+			-- 	army = {},
+			-- 	resources = {}
+			-- }
+			v.resources = {
+				gold = 0,
+				uranium = 0,
+				heavy_water = 0,
+				weapons = 0,
+				chemical_weapon = 0,
+				tank = 0
+			}
+			v.ai = {
+				strategy = {
+					strategy_type = "development",
+					target = nil,
+					wish = {},
+					turns = 0,
+				},
+				land_type = lume.randomchoice(land_types),
+			}
+			v.last_attacked = k
+			v.stability = 100
+
+			-- { land, money, step }
+			v.rebellion_support = {}
+			-- { action, step }
+			v.actions_taken = {}
+		end
+
+		for k, v in pairs(t.lands) do
+			table.insert(game_data.lands.Undeveloped_land.enemies, k)
+		end
+
+		-- a - army, o - owner, l_a - recruited_army, b - buildings, p - population, t_o = true owner, s - stability
+		for k, v in pairs(t.provinces) do
+			v.a = {}
+			if not v.water then
+				v.a[v.o] = 0 --math.floor(lume.random(10, 200))
+				v.l_a = 0
+				if not v.b then
+					v.b = {
+						-- megarefrigerator = 1
+						-- machine_a = 1,
+						-- machine_b = 1,
+						-- machine_c = 1
+						-- mine = lvl
+					}
+				end
+				-- v.t_o = v.o
+				if v.o == "Undeveloped_land" then
+					v.p = 0
+					v.a.Undeveloped_land = 500
+				else
+					v.p = math.floor(lume.random(min_population, max_population))
+				end
 			end
 		end
+
+		fill_resources.fill(t.provinces)
 	end
-
-	fill_resources.fill(t.provinces)
-
 end
 
 return M
