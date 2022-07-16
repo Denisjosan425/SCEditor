@@ -16,7 +16,8 @@ local scenarios = {
 		ww1 = require "scripts.scenarios.europe.wwi",
 		millenium = require "scripts.scenarios.europe.millenium",
 		anarchy = require "scripts.scenarios.europe.anarchy",
-		modern = require "scripts.scenarios.europe.modern_world"
+		modern = require "scripts.scenarios.europe.modern_world",
+		crimean_war = require "scripts.scenarios.europe.crimean_war"
 	}
 }
 
