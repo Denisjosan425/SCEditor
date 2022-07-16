@@ -119,27 +119,27 @@ local function calc_move()
 end
 
 local function calc_population()
-	for k, v in pairs(game_data.lands) do
-		v.population = 0
-	end
-	for k, v in pairs(game_data.provinces) do
-		if not v.water and v.o ~= "Undeveloped_land" then
-			local p = v.p
-			if p > game_values.max_population then
-				p = game_values.max_population
-			end
-			local population_increase_factor = 1 - p/game_values.max_population
-			local increase_value = v.p * skills_bonuses_functions.population_increase(v.o)
-			 * technology_bonuses_functions.population_increase(v.o) * population_increase_factor * 0.002
-			* ideology.population_increase_bonus(v.o)
-			increase_value = increase_value * (-4*game_data.lands[v.o].tax + 1.8)
-			if v.p + increase_value < 100 and increase_value < 0 then
-				increase_value = 0
-			end
-			v.p = v.p + increase_value
-			game_data.lands[v.o].population = game_data.lands[v.o].population + v.p
-		end
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.population = 0
+	-- end
+	-- for k, v in pairs(game_data.provinces) do
+	-- 	if not v.water and v.o ~= "Undeveloped_land" then
+	-- 		local p = v.p
+	-- 		if p > game_values.max_population then
+	-- 			p = game_values.max_population
+	-- 		end
+	-- 		local population_increase_factor = 1 - p/game_values.max_population
+	-- 		local increase_value = v.p * skills_bonuses_functions.population_increase(v.o)
+	-- 		 * technology_bonuses_functions.population_increase(v.o) * population_increase_factor * 0.002
+	-- 		* ideology.population_increase_bonus(v.o)
+	-- 		increase_value = increase_value * (-4*game_data.lands[v.o].tax + 1.8)
+	-- 		if v.p + increase_value < 100 and increase_value < 0 then
+	-- 			increase_value = 0
+	-- 		end
+	-- 		v.p = v.p + increase_value
+	-- 		game_data.lands[v.o].population = game_data.lands[v.o].population + v.p
+	-- 	end
+	-- end
 end
 
 local function get_min_technology_lvl(land)
@@ -400,85 +400,85 @@ local function calc_scenarios_modifiers(game_end_callback)
 end
 
 local function calc_economy(is_player, difficulty_list)
-	for k, v in pairs(game_data.lands) do
-		v.economy = {
-			income = {
-				population = 0,
-				technology = 0,
-				skills = 0,
-				buildings = 0,
-				trade = 0,
-				vassality = 0
-			},
-			expense = {
-				army = 0,
-				buildings = 0,
-				trade = 0,
-				vassality = 0
-			},
-			inflation = 0,
-			income_total = 0,
-			expense_total = 0,
-			balance = 0,
-		}
-	end
-	--Income
-	for k, v in pairs(game_data.lands) do
-		v.economy.income.population = math.pow(v.population, game_values.degree_of_dependence_of_income_on_population)
-				* math.pow(v.tax, 0.25) * 0.5 * ideology.gold_per_turn_bonus(k)
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.economy = {
+	-- 		income = {
+	-- 			population = 0,
+	-- 			technology = 0,
+	-- 			skills = 0,
+	-- 			buildings = 0,
+	-- 			trade = 0,
+	-- 			vassality = 0
+	-- 		},
+	-- 		expense = {
+	-- 			army = 0,
+	-- 			buildings = 0,
+	-- 			trade = 0,
+	-- 			vassality = 0
+	-- 		},
+	-- 		inflation = 0,
+	-- 		income_total = 0,
+	-- 		expense_total = 0,
+	-- 		balance = 0,
+	-- 	}
+	-- end
+	-- --Income
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.economy.income.population = math.pow(v.population, game_values.degree_of_dependence_of_income_on_population)
+	-- 			* math.pow(v.tax, 0.25) * 0.5 * ideology.gold_per_turn_bonus(k)
+	-- end
 
-	for k, v in pairs(game_data.lands) do
-		v.economy.income.technology = v.economy.income.population *
-		(technology_bonuses_functions["money"](k) - 1)
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.economy.income.technology = v.economy.income.population *
+	-- 	(technology_bonuses_functions["money"](k) - 1)
+	-- end
 
-	for k, v in pairs(game_data.lands) do
-		v.economy.income.skills = v.economy.income.population *
-		(skills_bonuses_functions["money"](k) - 1)
-		if game_data.dissolved_army_for_gold[k] then
-			v.economy.income.skills = v.economy.income.skills + game_data.dissolved_army_for_gold[k]
-			game_data.dissolved_army_for_gold[k] = nil
-		end
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.economy.income.skills = v.economy.income.population *
+	-- 	(skills_bonuses_functions["money"](k) - 1)
+	-- 	if game_data.dissolved_army_for_gold[k] then
+	-- 		v.economy.income.skills = v.economy.income.skills + game_data.dissolved_army_for_gold[k]
+	-- 		game_data.dissolved_army_for_gold[k] = nil
+	-- 	end
+	-- end
 
-	for k, v in pairs(game_data.lands) do
-		if v.vassal then
-			local b = 1
-			for key, val in pairs(game_data.lands[v.vassal].bonuses) do
-				if val[1] == "vassals_income" then
-					b = b * val[2]
-				end
-			end
-			v.economy.income.vassality = v.economy.income.population * (b - 1)
-			local tax = game_values.vassal_tax_standard
-			game_data.lands[v.vassal].economy.income.vassality = game_data.lands[v.vassal].economy.income.vassality + 
-			v.economy.income.population * tax
-			v.economy.expense.vassality = v.economy.expense.vassality + 
-			v.economy.income.population * tax
-		end
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	if v.vassal then
+	-- 		local b = 1
+	-- 		for key, val in pairs(game_data.lands[v.vassal].bonuses) do
+	-- 			if val[1] == "vassals_income" then
+	-- 				b = b * val[2]
+	-- 			end
+	-- 		end
+	-- 		v.economy.income.vassality = v.economy.income.population * (b - 1)
+	-- 		local tax = game_values.vassal_tax_standard
+	-- 		game_data.lands[v.vassal].economy.income.vassality = game_data.lands[v.vassal].economy.income.vassality + 
+	-- 		v.economy.income.population * tax
+	-- 		v.economy.expense.vassality = v.economy.expense.vassality + 
+	-- 		v.economy.income.population * tax
+	-- 	end
+	-- end
 
 	--Expense
-	for k, v in pairs(game_data.provinces) do
-		for key, val in pairs(v.a) do
-			local b = 1
-			if v.water then
-				b = game_values.water_army_cost
-			end
-			if not v.water and relations.check_alliance(key, v.o)
-			and lume.match(game_data.lands[key].bonuses, function(x) return x[1] == "pay_less_for_an_army_in_an_ally_lands" end) then
-				b = game_values.pay_less_for_an_army_in_an_ally_lands
-			end
-			if not is_player(key) then
-				b = b * difficulty_list[game_data.difficulty].maintenance_cost_modifier
-			end
+	-- for k, v in pairs(game_data.provinces) do
+	-- 	for key, val in pairs(v.a) do
+	-- 		local b = 1
+	-- 		if v.water then
+	-- 			b = game_values.water_army_cost
+	-- 		end
+	-- 		if not v.water and relations.check_alliance(key, v.o)
+	-- 		and lume.match(game_data.lands[key].bonuses, function(x) return x[1] == "pay_less_for_an_army_in_an_ally_lands" end) then
+	-- 			b = game_values.pay_less_for_an_army_in_an_ally_lands
+	-- 		end
+	-- 		if not is_player(key) then
+	-- 			b = b * difficulty_list[game_data.difficulty].maintenance_cost_modifier
+	-- 		end
 
-			b = b * ideology.maintenance_bonus(key)
+	-- 		b = b * ideology.maintenance_bonus(key)
 
-			game_data.lands[key].economy.expense.army = game_data.lands[key].economy.expense.army + val / game_values.army_cost * b
-		end
-	end
+	-- 		game_data.lands[key].economy.expense.army = game_data.lands[key].economy.expense.army + val / game_values.army_cost * b
+	-- 	end
+	-- end
 end
 
 local function calc_trade()
@@ -514,17 +514,17 @@ local function calc_inflation(land)
 end
 
 local function calc_balance()
-	for k, v in pairs(game_data.lands) do
-		v.economy.income_total = v.economy.income.population + v.economy.income.technology + v.economy.income.skills +
-		v.economy.income.buildings  + v.economy.income.trade
-		v.economy.expense_total = v.economy.expense.army + v.economy.expense.buildings + v.economy.expense.trade
-		v.economy.inflation = calc_inflation(k)
-		-- print("Inflation is: ", v.economy.inflation)
-		-- print("Inflation: Without and with: ", v.economy.income_total, game_data.lands[k].money,
-			-- v.economy.income_total * (1 - v.economy.inflation))
-		v.economy.balance = v.economy.income_total * (1 - v.economy.inflation) - v.economy.expense_total
-		v.money = v.money + v.economy.balance
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.economy.income_total = v.economy.income.population + v.economy.income.technology + v.economy.income.skills +
+	-- 	v.economy.income.buildings  + v.economy.income.trade
+	-- 	v.economy.expense_total = v.economy.expense.army + v.economy.expense.buildings + v.economy.expense.trade
+	-- 	v.economy.inflation = calc_inflation(k)
+	-- 	-- print("Inflation is: ", v.economy.inflation)
+	-- 	-- print("Inflation: Without and with: ", v.economy.income_total, game_data.lands[k].money,
+	-- 		-- v.economy.income_total * (1 - v.economy.inflation))
+	-- 	v.economy.balance = v.economy.income_total * (1 - v.economy.inflation) - v.economy.expense_total
+	-- 	v.money = v.money + v.economy.balance
+	-- end
 end
 
 local function calc_num_of_provinces()
@@ -539,23 +539,23 @@ local function calc_num_of_provinces()
 end
 
 local function calc_science()
-	for k, v in pairs(game_data.lands) do
-		v.total_science_per_turn = 0
-		v.science_per_turn = {
-			base = 0,
-			buildings = 0,
-			technology = 0,
-			skills = 0
-		}
-	end
-	-- for k, v in pairs(game_data.provinces) do
-	-- 	if not v.water then
-	-- 		game_data.lands[v.o].science_per_turn.provinces = game_data.lands[v.o].science_per_turn.provinces + 0.1
-	-- 	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.total_science_per_turn = 0
+	-- 	v.science_per_turn = {
+	-- 		base = 0,
+	-- 		buildings = 0,
+	-- 		technology = 0,
+	-- 		skills = 0
+	-- 	}
 	-- end
-	for k, v in pairs(game_data.lands) do
-		v.science_per_turn.base = game_values.base_science_per_turn
-	end
+	-- -- for k, v in pairs(game_data.provinces) do
+	-- -- 	if not v.water then
+	-- -- 		game_data.lands[v.o].science_per_turn.provinces = game_data.lands[v.o].science_per_turn.provinces + 0.1
+	-- -- 	end
+	-- -- end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.science_per_turn.base = game_values.base_science_per_turn
+	-- end
 end
 
 local function calc_technology()
@@ -591,30 +591,30 @@ end
 
 
 local function calc_skills()
-	for k, v in pairs(game_data.lands) do
-		if game_data.step < game_values.max_skills / game_values.skills_per_turn then
-			v.skills = v.skills + game_values.skills_per_turn
-		end
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	if game_data.step < game_values.max_skills / game_values.skills_per_turn then
+	-- 		v.skills = v.skills + game_values.skills_per_turn
+	-- 	end
+	-- end
 end
 
 local function calc_movement_points()
-	for k, v in pairs(game_data.lands) do
-		v.movement_points = 1
-	end
-	for k, v in pairs(game_data.provinces) do
-		if not v.water then
-			game_data.lands[v.o].movement_points = game_data.lands[v.o].movement_points + 1
-		end
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.movement_points = 1
+	-- end
+	-- for k, v in pairs(game_data.provinces) do
+	-- 	if not v.water then
+	-- 		game_data.lands[v.o].movement_points = game_data.lands[v.o].movement_points + 1
+	-- 	end
+	-- end
 
-	for k, v in pairs(game_data.lands) do
-		for key, val in pairs(v.bonuses) do
-			if val[1] == "more_movement_points" then
-				v.movement_points = v.movement_points + val[2]
-			end
-		end
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	for key, val in pairs(v.bonuses) do
+	-- 		if val[1] == "more_movement_points" then
+	-- 			v.movement_points = v.movement_points + val[2]
+	-- 		end
+	-- 	end
+	-- end
 end
 
 function M.write_history()

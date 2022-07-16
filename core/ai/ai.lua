@@ -247,113 +247,112 @@ local function get_strategy(land)
 end
 
 local function calc_strategy(land)
-	game_data.lands[land].ai.strategy.strategy_type = get_strategy(land)
-	game_data.lands[land].tax = ai_data.strategy[game_data.lands[land].ai.strategy.strategy_type].tax
+	-- game_data.lands[land].ai.strategy.strategy_type = get_strategy(land)
+	-- game_data.lands[land].tax = ai_data.strategy[game_data.lands[land].ai.strategy.strategy_type].tax
 
-	local t = {
-		"republic", "trade_republic", "democracy", "monarchy", "theocracy", "communism", "fascism", "anarchism"
-	}
+	-- local t = {
+	-- 	"republic", "trade_republic", "democracy", "monarchy", "theocracy", "communism", "fascism", "anarchism"
+	-- }
 
-	if game_data.step - game_data.lands[land].changed_ideology >= game_values.ideology_cooldown + math.floor(lume.random(10, 100)) then
-		core.set_ideology(land, lume.randomchoice(t))
-	end
+	-- if game_data.step - game_data.lands[land].changed_ideology >= game_values.ideology_cooldown + math.floor(lume.random(10, 100)) then
+	-- 	core.set_ideology(land, lume.randomchoice(t))
+	-- end
 
-	strategy_tree[game_data.lands[land].ai.strategy.strategy_type](land)
-	universal_ai_actions(land)
+	-- strategy_tree[game_data.lands[land].ai.strategy.strategy_type](land)
+	-- universal_ai_actions(land)
 end
 
 local function calc_diplomacy(land)
-	if scenarios_modifiers[game_data.id] and scenarios_modifiers[game_data.id].blocked_diplomacy then
-		return
-	end
-	local offers_list = offers.get_offers(land)
-	for k, v in pairs(offers_list) do
-		-- print("Offer for land:", land, k, v)
-		if v[2] == "peace" then
-			-- perfomance.continue_state("peace")
-			if ai_utils.difficult_situation(land) then
-				accept_offer(v[1])
-			end
-			-- perfomance.finish_state("peace")
-		elseif v[2] == "pact" then
-			-- perfomance.continue_state("pact")
-			if ai_utils.accept_pact(land, v[3]) then
-				accept_offer(v[1])
-			end
-			-- perfomance.finish_state("pact")
-		elseif v[2] == "alliance" then
-			-- perfomance.continue_state("alliance")
-			if ai_utils.accept_alliance(land, v[3]) then
-				accept_offer(v[1])
-			end
-			-- perfomance.finish_state("alliance")
-		elseif v[2] == "vassal" then
-			-- perfomance.continue_state("vassal")
-			-- print("Check vassal offer: ", v[1], v[3], land)
-			if game_data.lands[land].num_of_provinces <= 3 and game_data.lands[land].army * 3 < game_data.lands[v[3]].army then
-				accept_offer(v[1])
-			end
-			-- perfomance.finish_state("vassal")
-		elseif v[2] == "trade" then
-			-- perfomance.continue_state("trade")
-			-- pprint("Parse trade format: ", v)
-			if ai_utils.parse_trade(v) then
-				accept_offer(v[1])
-			end
-			-- perfomance.finish_state("trade")
-		end
-	end
+	-- if scenarios_modifiers[game_data.id] and scenarios_modifiers[game_data.id].blocked_diplomacy then
+	-- 	return
+	-- end
+	-- local offers_list = offers.get_offers(land)
+	-- for k, v in pairs(offers_list) do
+	-- 	-- print("Offer for land:", land, k, v)
+	-- 	if v[2] == "peace" then
+	-- 		-- perfomance.continue_state("peace")
+	-- 		if ai_utils.difficult_situation(land) then
+	-- 			accept_offer(v[1])
+	-- 		end
+	-- 		-- perfomance.finish_state("peace")
+	-- 	elseif v[2] == "pact" then
+	-- 		-- perfomance.continue_state("pact")
+	-- 		if ai_utils.accept_pact(land, v[3]) then
+	-- 			accept_offer(v[1])
+	-- 		end
+	-- 		-- perfomance.finish_state("pact")
+	-- 	elseif v[2] == "alliance" then
+	-- 		-- perfomance.continue_state("alliance")
+	-- 		if ai_utils.accept_alliance(land, v[3]) then
+	-- 			accept_offer(v[1])
+	-- 		end
+	-- 		-- perfomance.finish_state("alliance")
+	-- 	elseif v[2] == "vassal" then
+	-- 		-- perfomance.continue_state("vassal")
+	-- 		-- print("Check vassal offer: ", v[1], v[3], land)
+	-- 		if game_data.lands[land].num_of_provinces <= 3 and game_data.lands[land].army * 3 < game_data.lands[v[3]].army then
+	-- 			accept_offer(v[1])
+	-- 		end
+	-- 		-- perfomance.finish_state("vassal")
+	-- 	elseif v[2] == "trade" then
+	-- 		-- perfomance.continue_state("trade")
+	-- 		-- pprint("Parse trade format: ", v)
+	-- 		if ai_utils.parse_trade(v) then
+	-- 			accept_offer(v[1])
+	-- 		end
+	-- 		-- perfomance.finish_state("trade")
+	-- 	end
+	-- end
 end
 
 local function calc_expenses(land)
-	-- print(game_data.lands[land].ai.strategy.strategy_type)
-	if game_data.step == 0 then
-		return
-	end
-	local budget = ai_data.strategy[game_data.lands[land].ai.strategy.strategy_type].budget
-	local army_budget = math.floor((game_data.lands[land].economy.balance * 2 +
-	game_data.lands[land].money > 0 and game_data.lands[land].money / 2 or 0) * budget.army)
+	-- -- print(game_data.lands[land].ai.strategy.strategy_type)
+	-- if game_data.step == 0 then
+	-- 	return
+	-- end
+	-- local budget = ai_data.strategy[game_data.lands[land].ai.strategy.strategy_type].budget
+	-- local army_budget = math.floor((game_data.lands[land].economy.balance * 2 +
+	-- game_data.lands[land].money > 0 and game_data.lands[land].money / 2 or 0) * budget.army)
 
-	if army_budget < 0 then
-		army_budget = 0
-	end
+	-- if army_budget < 0 then
+	-- 	army_budget = 0
+	-- end
 
-	ai_utils.balance_army(land, army_budget * game_values.army_cost, difficulty)
+	-- ai_utils.balance_army(land, army_budget * game_values.army_cost, difficulty)
 
-	buildings.build(land, budget)
+	-- buildings.build(land, budget)
 
-	-- no_enemies means that there is no enemies or civilization can't attack enemy
-	if ai_utils.no_enemies(land) and #game_data.lands[land].enemies > 1 then
-		ai_utils.help_ally(land)
-	end
-
+	-- -- no_enemies means that there is no enemies or civilization can't attack enemy
+	-- if ai_utils.no_enemies(land) and #game_data.lands[land].enemies > 1 then
+	-- 	ai_utils.help_ally(land)
+	-- end
 end
 
 local function calc_technology(land)
-	local available_technology = {}
-	for k, v in pairs(technology_data) do
-		if check_technology(k, land) == "available" then
-			table.insert(available_technology, k)
-		end
-	end
-	if #available_technology > 0 then
-		game_data.lands[land].selected_technology = lume.randomchoice(available_technology)
-	end
+	-- local available_technology = {}
+	-- for k, v in pairs(technology_data) do
+	-- 	if check_technology(k, land) == "available" then
+	-- 		table.insert(available_technology, k)
+	-- 	end
+	-- end
+	-- if #available_technology > 0 then
+	-- 	game_data.lands[land].selected_technology = lume.randomchoice(available_technology)
+	-- end
 end
 
 local function calc_skills(land)
-	local available_skills = {}
-	for k, v in pairs(skills_data) do
-		if check_skill(k, land) == "available" then
-			available_skills[k] = v.cost * v.cost * v.cost -- to learn skills not only the first
-		end
-	end
-	if next(available_skills) then
-		local skill = lume.weightedchoice(available_skills)
-		if skill and game_data.lands[land].skills >= skills_data[skill].cost then
-			core.open_skill(land, skill)
-		end
-	end
+	-- local available_skills = {}
+	-- for k, v in pairs(skills_data) do
+	-- 	if check_skill(k, land) == "available" then
+	-- 		available_skills[k] = v.cost * v.cost * v.cost -- to learn skills not only the first
+	-- 	end
+	-- end
+	-- if next(available_skills) then
+	-- 	local skill = lume.weightedchoice(available_skills)
+	-- 	if skill and game_data.lands[land].skills >= skills_data[skill].cost then
+	-- 		core.open_skill(land, skill)
+	-- 	end
+	-- end
 end
 
 -- For debug
