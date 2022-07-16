@@ -9,10 +9,16 @@ local plugins_list = {
 		data = require "core.server.plugins.permissions",
 		order = 4
 	},
+	
 	chat = {
 		data = require "core.server.plugins.chat",
 		order = 5
 	},
+
+	save_system = {
+		data = require "savesystem.savesystem",
+		order = 6
+	}
 }
 
 local plugins_data = {}
