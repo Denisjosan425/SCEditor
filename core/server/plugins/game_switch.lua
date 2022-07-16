@@ -11,7 +11,14 @@ local set_server_state
 local get_data
 local start
 
-local scenarios = {}
+local scenarios = {
+	europe = {
+		ww1 = require "scripts.scenarios.europe.wwi",
+		millenium = require "scripts.scenarios.europe.millenium",
+		anarchy = require "scripts.scenarios.europe.anarchy",
+		modern = require "scripts.scenarios.europe.modern_world"
+	}
+}
 
 local next_map
 local next_scenario
