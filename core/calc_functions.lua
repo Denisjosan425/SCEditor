@@ -373,24 +373,24 @@ local function calc_stability(difficulty_list)
 end
 
 local function stabilize_population()
-	for k, v in pairs(adjacency_map) do
-		for key, val in pairs(v) do
-			if not game_data.provinces[k].water and not game_data.provinces[val].water then
-				if game_data.provinces[k].p > game_data.provinces[val].p and 
-				game_data.provinces[val].o ~= "Undeveloped_land" then
-					local population_count = (game_data.provinces[k].p - game_data.provinces[val].p)
-					if game_data.provinces[k].o == game_data.provinces[val].o then
-						population_count = population_count * game_values.stabilize_province_speed_land
-					else
-						population_count = population_count * game_values.stabilize_province_speed_common
-					end
-					population_count = math.floor(population_count)
-					game_data.provinces[k].p = game_data.provinces[k].p - population_count
-					game_data.provinces[val].p = game_data.provinces[val].p + population_count
-				end
-			end
-		end
-	end
+	-- for k, v in pairs(adjacency_map) do
+	-- 	for key, val in pairs(v) do
+	-- 		if not game_data.provinces[k].water and not game_data.provinces[val].water then
+	-- 			if game_data.provinces[k].p > game_data.provinces[val].p and 
+	-- 			game_data.provinces[val].o ~= "Undeveloped_land" then
+	-- 				local population_count = (game_data.provinces[k].p - game_data.provinces[val].p)
+	-- 				if game_data.provinces[k].o == game_data.provinces[val].o then
+	-- 					population_count = population_count * game_values.stabilize_province_speed_land
+	-- 				else
+	-- 					population_count = population_count * game_values.stabilize_province_speed_common
+	-- 				end
+	-- 				population_count = math.floor(population_count)
+	-- 				game_data.provinces[k].p = game_data.provinces[k].p - population_count
+	-- 				game_data.provinces[val].p = game_data.provinces[val].p + population_count
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
 end
 
 local function calc_scenarios_modifiers(game_end_callback)
@@ -500,17 +500,17 @@ local function calc_trade()
 end
 
 local function calc_inflation(land)
-	local i = 0
-	local k = (game_data.lands[land].money + game_data.lands[land].economy.income_total) / game_data.lands[land].economy.income_total
-	-- print("Calc k : ", game_data.lands[land].money, game_data.lands[land].economy.income_total, k)
-	local finish_inflation = game_values.finish_inflation / ideology.get_inflation_bonus(land)
-	if k > game_values.start_inflation then
-		if k > finish_inflation then
-			k = finish_inflation
-		end
-		i = k / finish_inflation * game_values.max_inflation
-	end
-	return i
+	-- local i = 0
+	-- local k = (game_data.lands[land].money + game_data.lands[land].economy.income_total) / game_data.lands[land].economy.income_total
+	-- -- print("Calc k : ", game_data.lands[land].money, game_data.lands[land].economy.income_total, k)
+	-- local finish_inflation = game_values.finish_inflation / ideology.get_inflation_bonus(land)
+	-- if k > game_values.start_inflation then
+	-- 	if k > finish_inflation then
+	-- 		k = finish_inflation
+	-- 	end
+	-- 	i = k / finish_inflation * game_values.max_inflation
+	-- end
+	-- return i
 end
 
 local function calc_balance()
@@ -528,14 +528,14 @@ local function calc_balance()
 end
 
 local function calc_num_of_provinces()
-	for k, v in pairs(game_data.lands) do
-		v.num_of_provinces = 0
-	end
-	for k, v in pairs(game_data.provinces) do
-		if not v.water then
-			game_data.lands[v.o].num_of_provinces = game_data.lands[v.o].num_of_provinces + 1
-		end
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.num_of_provinces = 0
+	-- end
+	-- for k, v in pairs(game_data.provinces) do
+	-- 	if not v.water then
+	-- 		game_data.lands[v.o].num_of_provinces = game_data.lands[v.o].num_of_provinces + 1
+	-- 	end
+	-- end
 end
 
 local function calc_science()
@@ -559,34 +559,34 @@ local function calc_science()
 end
 
 local function calc_technology()
-	for k, v in pairs(game_data.lands) do
-		v.total_science_per_turn = v.science_per_turn.base + v.science_per_turn.buildings
-		v.total_science_per_turn = v.total_science_per_turn * ideology.science_per_turn_bonus(k)
-		v.science_per_turn.technology = v.science_per_turn.technology
-		 + v.total_science_per_turn * technology_bonuses_functions.science(k)
-		 v.science_per_turn.skills = v.science_per_turn.skills
-		 + v.total_science_per_turn * skills_bonuses_functions.science(k)
-		v.total_science_per_turn = v.science_per_turn.base + v.science_per_turn.buildings + v.science_per_turn.technology +
-		v.science_per_turn.skills
-	end
-	for k, v in pairs(game_data.lands) do
-		v.science = v.science + v.total_science_per_turn
-	end
-	for k, v in pairs(game_data.lands) do
-		if v.selected_technology and technology_data[v.selected_technology].cost <= v.science then
-			v.science = v.science - technology_data[v.selected_technology].cost
-			table.insert(v.opened_technology, v.selected_technology)
-			for key, val in pairs(technology_data[v.selected_technology].bonuses) do
-				if not val[2] then
-					val[2] = 0
-				end
-				val[3] = "technology"
-				table.insert(v.bonuses, val)
-				-- pprint("Added bonus:", v.bonuses)
-			end
-			v.selected_technology = nil
-		end
-	end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.total_science_per_turn = v.science_per_turn.base + v.science_per_turn.buildings
+	-- 	v.total_science_per_turn = v.total_science_per_turn * ideology.science_per_turn_bonus(k)
+	-- 	v.science_per_turn.technology = v.science_per_turn.technology
+	-- 	 + v.total_science_per_turn * technology_bonuses_functions.science(k)
+	-- 	 v.science_per_turn.skills = v.science_per_turn.skills
+	-- 	 + v.total_science_per_turn * skills_bonuses_functions.science(k)
+	-- 	v.total_science_per_turn = v.science_per_turn.base + v.science_per_turn.buildings + v.science_per_turn.technology +
+	-- 	v.science_per_turn.skills
+	-- end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	v.science = v.science + v.total_science_per_turn
+	-- end
+	-- for k, v in pairs(game_data.lands) do
+	-- 	if v.selected_technology and technology_data[v.selected_technology].cost <= v.science then
+	-- 		v.science = v.science - technology_data[v.selected_technology].cost
+	-- 		table.insert(v.opened_technology, v.selected_technology)
+	-- 		for key, val in pairs(technology_data[v.selected_technology].bonuses) do
+	-- 			if not val[2] then
+	-- 				val[2] = 0
+	-- 			end
+	-- 			val[3] = "technology"
+	-- 			table.insert(v.bonuses, val)
+	-- 			-- pprint("Added bonus:", v.bonuses)
+	-- 		end
+	-- 		v.selected_technology = nil
+	-- 	end
+	-- end
 end
 
 
