@@ -9,7 +9,7 @@ local chat_message = function(text, type, just_for_host, client)
 		default = "#E4E4E4"
 	}
 	local c = types[type] or types.default
-	api.call_function("chat_function", "<color="..c..">"..text.."</color>", just_for_host, client)
+	api.call_function("chat_function", "<color="..c..">[SCEdit]"..text.."</color>", just_for_host, client)
 end
 
 local function attribute_message(text,client)
